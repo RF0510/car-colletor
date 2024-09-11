@@ -1,5 +1,11 @@
 from django.db import models
 
+TYPES = (
+    ('R', 'unleaded'),
+    ('M', 'Mid-grade'),
+    ('P', 'Premium')
+)
+
 # Create your models here.
 class Car(models.Model):
     make = models.CharField(max_length=100)
@@ -9,3 +15,13 @@ class Car(models.Model):
     
     def __str__(self):
      return self.make
+ 
+class Gas(models.Model):
+    date = models.DateField('Gas Up Date')
+    type = models.CharField(max_length=1,
+    choices=TYPES,
+    default=TYPES[0][0]
+  )
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)  
+    def __str__(self):
+     return f"{self.get_type_display()} on {self.date}"
