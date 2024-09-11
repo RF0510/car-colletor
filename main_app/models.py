@@ -23,5 +23,15 @@ class Gas(models.Model):
     default=TYPES[0][0]
   )
     car = models.ForeignKey(Car, on_delete=models.CASCADE)  
+    
     def __str__(self):
      return f"{self.get_type_display()} on {self.date}"
+    class Meta:
+      ordering = ['-date']
+      
+class Accessories(models.Model):
+    name = models.CharField(max_length=50)
+    color = models.CharField(max_length=20)
+
+    def __str__(self):
+     return self.name
