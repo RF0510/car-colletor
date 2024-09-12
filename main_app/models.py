@@ -1,5 +1,7 @@
 from django.db import models
 from datetime import date
+from django.contrib.auth.models import User
+
 TYPES = (
     ('R', 'unleaded'),
     ('M', 'Mid-grade'),
@@ -22,6 +24,7 @@ class Car(models.Model):
     description = models.TextField(max_length=250)
     year = models.IntegerField()
     Accessories = models.ManyToManyField(Accessories)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def filled_up_today(self):
         return self.gas_set.filter(date=date.today()).count() >= len(TYPES)
