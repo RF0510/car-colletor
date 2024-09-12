@@ -20,6 +20,18 @@ class CarDetail(generics.RetrieveUpdateDestroyAPIView):
   serializer_class = CarSerializer
   lookup_field = 'id'
   
+  def retrieve(self, request, *args, **kwargs):
+    instance = self.get_object()
+    serializer = self.get_serializer(instance)
+    
+    accessories_not_associated = Accessories.objects.exclude(id__in=instance.accessories.all())
+    accessories_serializer = AccessoriesSerializer(accessories_not_associated, many=True)
+    
+    return Response({
+        'car': serializer.data,
+        'accessories_not_associated': accessories_serializer.data
+    })
+  
 class GasListCreate(generics.ListCreateAPIView):
   serializer_class = GasSerializer
 
@@ -48,3 +60,17 @@ class AccessoriesDetail(generics.RetrieveUpdateDestroyAPIView):
   queryset = Accessories.objects.all()
   serializer_class = AccessoriesSerializer
   lookup_field = 'id'
+  
+class AddAccessoriesToCar(APIView):
+  def post(self, request, car_id, accessories_id):
+    car = Car.objects.get(id=car_id)
+    accessories = Accessories.objects.get(id=accessories_id)
+    car.accessories.add(accessories)
+    return Response({'message': f'Accessories {accessories.name} added to Car {car.name}'})
+  
+class RemoveAccessoriesFromCar(APIView):
+  def post(self, request, car_id, accessories_id):
+    car = Car.objects.get(id=car_id)
+    accessories = Accessories.objects.get(id=accessories_id)
+    car.accessories.remove(accessories)
+    return Response({'message': f'Accessories {accessories.name} removed from Car {car.name}'})
