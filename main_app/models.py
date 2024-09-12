@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import date
 TYPES = (
     ('R', 'unleaded'),
     ('M', 'Mid-grade'),
@@ -7,14 +7,24 @@ TYPES = (
 )
 
 # Create your models here.
+
+class Accessories(models.Model):
+    name = models.CharField(max_length=50)
+    color = models.CharField(max_length=20)
+
+    def __str__(self):
+     return self.name
+   
+   
 class Car(models.Model):
     make = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
     description = models.TextField(max_length=250)
     year = models.IntegerField()
+    Accessories = models.ManyToManyField(Accessories)
     
-    def __str__(self):
-     return self.make
+    def filled_up_today(self):
+        return self.gas_set.filter(date=date.today()).count() >= len(TYPES)
  
 class Gas(models.Model):
     date = models.DateField('Gas Up Date')
@@ -28,10 +38,4 @@ class Gas(models.Model):
      return f"{self.get_type_display()} on {self.date}"
     class Meta:
       ordering = ['-date']
-      
-class Accessories(models.Model):
-    name = models.CharField(max_length=50)
-    color = models.CharField(max_length=20)
-
-    def __str__(self):
-     return self.name
+      verbose_name_plural = "gas"
