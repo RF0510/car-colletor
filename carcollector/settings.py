@@ -14,6 +14,16 @@ from pathlib import Path
 # Configuration for simple JWT
 from datetime import timedelta
 
+import environ  
+import dj_database_url
+import django_heroku
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +37,7 @@ SECRET_KEY = 'django-insecure-awfm9uh87n4r^oo7fk*6xg*4o81fc_g3@v02#3h+@!m^a_@-qz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
@@ -58,6 +68,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 # Configuration for django-rest-framework-simplejwt
@@ -109,15 +121,20 @@ WSGI_APPLICATION = 'carcollector.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'carcollector',
+    'default': 
+        dj_database_url.config('DATABASE_URL')
+}
+
+#DATABASES = {
+ #   'default': {
+  #      'ENGINE': 'django.db.backends.postgresql',
+   #     'NAME': 'carcollector',
         # 'HOST': 'localhost',  <-- (optional) some computers might need this line
         # 'USER': 'car_admin', <-- (optional) postgres user name, if you have to sign into an account to open psql, you will want to add that user name here.
         # 'PASSWORD': 'password', <-- (optional) postgres user password, if you have to sign into an account to open psql, you will want to add that user password here.
         # 'PORT': 3000 <-- if you desire to use a port other than 8000, you can change that here to any valid port id, some number between 1 and 65535 that isn't in use by some other process on your machine. The reason for this port number range is because of how TCP/IP works, a TCP/IP protocol network(the most widely used protocol used on the web) allocated 16 bits for port numbers. This means that number must be greater than 0 and less than 2^15 -1. 
-    }
-}
+ #   }
+#}
 
 
 # Password validation
@@ -161,5 +178,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+# Add this to the very bottom of your settings.py file
+# If you don't your app will not deploy properly
+django_heroku.settings(locals())
 
