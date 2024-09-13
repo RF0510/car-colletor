@@ -24,7 +24,19 @@ from datetime import timedelta
 env = environ.Env()
 environ.Env.read_env()
 
+# These are required
+DATABASE_URL=env('DATABASE_URL')
+SECRET_KEY=env('SECRET_KEY')
 
+# These are not required.
+# If you want to connect locally to the database you may need them
+# Something to be aware of, nothing more.
+
+# PGDATABASE=env('PGDATABASE')
+# PGHOST=env('PGHOST')
+# PGPASSWORD=env('PGPASSWORD')
+# PGPORT=env('PGPORT')
+# PGUSER=env('PGUSER')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,7 +46,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-awfm9uh87n4r^oo7fk*6xg*4o81fc_g3@v02#3h+@!m^a_@-qz'
+#SECRET_KEY = 'django-insecure-awfm9uh87n4r^oo7fk*6xg*4o81fc_g3@v02#3h+@!m^a_@-qz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
